@@ -21,16 +21,16 @@ class Dice {
     
     func rotateLeft() {
         var aux = centervals[ 1 ]
-        centervals[ 1 ] = leftval
-        leftval = rightval
-        rightval = aux
+        centervals[ 1 ] = rightval
+        rightval = leftval
+        leftval = aux
     }
     
     func rotateRight() {
         var aux = centervals[ 1 ]
-        centervals[ 1 ] = rightval
-        rightval = leftval
-        leftval = aux
+        centervals[ 1 ] = leftval
+        leftval = rightval
+        rightval = aux
     }
     
     func rotateUp() {
