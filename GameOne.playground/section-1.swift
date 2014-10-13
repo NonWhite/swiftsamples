@@ -82,7 +82,7 @@ class Game {
             var pos = Utils.random( move , maxVal: sizeOfBoard - 2 )
             table[ pos ] = -move
         }
-        for i in 1...maxNumberOfSnakes {
+        for i in 1...maxNumberOfLadders {
             var move = Utils.random( maxLengthForJump )
             var pos = Utils.random( 0 , maxVal: sizeOfBoard - move )
             table[ pos ] = move
@@ -104,9 +104,8 @@ class Game {
         println( "Player #\(player) is in \(playerPosition[ player ]) and has \(move) in dice, moves to \(newPos)" )
         if( newPos >= sizeOfBoard ){
             println( "Player #\(player) has won" )
-            return player // In case a player wins
+            return player // In case player wins
         }
-        
         if( board[ newPos ] != 0 ){
             let typeOfCell = board[ newPos ] < 0 ? "snake" : "ladder"
             println( "Player #\(player) is in a \(typeOfCell), has to move to \( newPos + board[ newPos ] )" )
@@ -115,7 +114,7 @@ class Game {
         playerPosition[ player ] = newPos
         if( newPos >= sizeOfBoard ){
             println( "Player #\(player) has won" )
-            return player // In case a player wins
+            return player // In case player wins
         }
         return -1
     }
