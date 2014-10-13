@@ -59,18 +59,18 @@ class Dice {
 }
 
 class Game {
-    var board : [Int]
-    var player : Int
-    var playerPosition : [Int]
+    private var board : [Int]
+    private var player : Int
+    private var playerPosition : [Int]
     private let sizeOfBoard = 30
-    private let maxNumberOfPlayers = 2
+    private let maxNumberOfPlayers = 3
     private let maxNumberOfSnakes = 4
     private let maxNumberOfLadders = 4
     private let maxLengthForJump = 10
     
     init(){
         player = 0
-        playerPosition = [Int]( count: 2 , repeatedValue: 0 )
+        playerPosition = [Int]( count: maxNumberOfPlayers , repeatedValue: 0 )
         board = [Int]()
         board = generateBoard()
     }
@@ -95,6 +95,7 @@ class Game {
     }
     
     func nextTurn(){
+        if( player == maxNumberOfPlayers - 1 ){ println() }
         player = ( player + 1 ) % maxNumberOfPlayers
     }
     
@@ -107,7 +108,7 @@ class Game {
             return player // In case player wins
         }
         if( board[ newPos ] != 0 ){
-            let typeOfCell = board[ newPos ] < 0 ? "snake" : "ladder"
+            let typeOfCell = board[ newPos ] < 0 ? "SNAKE" : "LADDER"
             println( "Player #\(player) is in a \(typeOfCell), has to move to \( newPos + board[ newPos ] )" )
             newPos += board[ newPos ]
         }
