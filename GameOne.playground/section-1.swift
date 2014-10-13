@@ -1,5 +1,15 @@
 import Darwin
 
+class Utils {
+    class func random( maxVal : Int ) -> Int { // between 0 and maxVal
+        return Int( arc4random_uniform( UInt32( maxVal ) + 1 ) )
+    }
+    
+    class func random( minVal : Int , maxVal : Int ) -> Int { // between minVal and maxVal
+        return random( maxVal - minVal ) + minVal
+    }
+}
+
 class Dice {
     var centervals : [Int]
     var leftval : Int
@@ -16,7 +26,7 @@ class Dice {
     }
     
     class func rollDice() -> Int {
-        return Int( arc4random_uniform( 6 ) ) + 1 ;
+        return Utils.random( 1 , maxVal: 6 )
     }
     
     func rotateLeft() {
@@ -48,17 +58,71 @@ class Dice {
     }
 }
 
-Dice.rollDice()
-var mydice = Dice()
+class Game {
+    var board : [Int]
+    var player : Int
+    var playerPosition : [Int]
+    private let sizeOfBoard = 30
+    private let maxNumberOfPlayers = 2
+    private let maxNumberOfSnakes = 4
+    private let maxNumberOfLadders = 4
+    private let maxLengthForJump = 10
+    
+    init(){
+        player = 0
+        playerPosition = [Int]( count: 2 , repeatedValue: 0 )
+        board = [Int]()
+        board = generateBoard()
+    }
+    
+    private func generateBoard() -> [Int] {
+        var table = [Int]( count: sizeOfBoard , repeatedValue: 0 )
+        for i in 1...maxNumberOfSnakes {
+            var move = Utils.random( maxLengthForJump )
+            var pos = Utils.random( move , maxVal: sizeOfBoard - 2 )
+            table[ pos ] = -move
+        }
+        for i in 1...maxNumberOfSnakes {
+            var move = Utils.random( maxLengthForJump )
+            var pos = Utils.random( 0 , maxVal: sizeOfBoard - move )
+            table[ pos ] = move
+        }
+        for i in 0..<sizeOfBoard {
+            print( "\(table[ i ]) " )
+        }
+        println()
+        return table
+    }
+    
+    func nextTurn(){
+        player = ( player + 1 ) % maxNumberOfPlayers
+    }
+    
+    func play() -> Int {
+        var move = Dice.rollDice()
+        var newPos = playerPosition[ player ] + move
+        println( "Player #\(player) is in \(playerPosition[ player ]) and has \(move) in dice, moves to \(newPos)" )
+        if( newPos >= sizeOfBoard ){
+            println( "Player #\(player) has won" )
+            return player // In case a player wins
+        }
+        
+        if( board[ newPos ] != 0 ){
+            let typeOfCell = board[ newPos ] < 0 ? "snake" : "ladder"
+            println( "Player #\(player) is in a \(typeOfCell), has to move to \( newPos + board[ newPos ] )" )
+            newPos += board[ newPos ]
+        }
+        playerPosition[ player ] = newPos
+        if( newPos >= sizeOfBoard ){
+            println( "Player #\(player) has won" )
+            return player // In case a player wins
+        }
+        return -1
+    }
+}
 
-mydice.rotateDown()
-mydice.getUpperFace()
+var game = Game()
 
-mydice.rotateLeft()
-mydice.getUpperFace()
-
-mydice.rotateUp()
-mydice.getUpperFace()
-
-mydice.rotateRight()
-mydice.getUpperFace()
+while( game.play() < 0 ){
+    game.nextTurn()
+}
